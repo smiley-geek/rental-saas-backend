@@ -1,0 +1,60 @@
+name: Test
+on: push
+
+jobs:
+  cicd:
+    name: Build and test
+    # Containers must run in Linux based operating systems
+    runs-on: ubuntu-latest
+    container: node:18
+
+    # Service containers to run with `container-job`
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: password
+          POSTGRES_HOST: postgres
+          POSTGRES_PORT: 5432
+
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      # Downloads a copy of the code in your repository before running CI tests
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      # Performs a clean installation of all dependencies in the `package.json` file
+     
+      - name: Install dependencies
+        run: yarn
+
+      - name: Connect to PostgreSQL
+        # Runs a script that creates a PostgreSQL table, populates
+        # the table with data, and then retrieves the data.
+        run: yarn prisma db push
+        # Environment variables used by the `client.js` script to create a new PostgreSQL table.
+        env:
+          # The hostname used to communicate with the PostgreSQL service container
+          DATABASE_URL: DATABASE_URL = postgresql://postgres:password@localhost:5432
+
+
+      - name: Build
+        run: yarn build 
+      
+      - name: Test
+        run: yarn test
+
+      - name: Hooray
+        run: echo Hooray, code ready to deploy
+      
+
+      
