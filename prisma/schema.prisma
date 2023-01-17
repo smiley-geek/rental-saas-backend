@@ -1,0 +1,95 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+// AUTH
+model user{
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  email String
+  role user_type
+  password String
+  tenant tenant?  
+  owner owner?
+}
+
+
+model refreshToken{
+  id Int @id @default(autoincrement())
+  token String 
+  revoked Boolean
+  createdAT DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+}
+
+
+
+
+// owners
+
+model owner{
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user user @relation(fields: [userId], references: [id])
+  userId Int @unique
+  firstName String?
+}
+
+model property{
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  name String 
+  desc String 
+  price Float
+  logo String 
+  beds Int 
+  baths Int 
+  rooms Int 
+  sqArea Float
+  latitude Float
+  longitude Float
+  publish Boolean @default(false)
+  tenant tenant?
+}
+
+
+model gallery{
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  imageUrl String 
+  type String
+}
+
+
+// tenants
+
+
+model tenant{
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user user @relation(fields: [userId], references: [id])
+  userId Int @unique
+  property property @relation(fields: [propertyId], references: [id])
+  propertyId Int @unique
+}
+
+
+
+
+
+enum user_type{
+  
+  TENANT
+  OWNER
+}
