@@ -32,11 +32,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
 
-      # Performs a clean installation of all dependencies in the `package.json` file
-      - name: Cache node modules
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-node-modules
+     
       - name: Install dependencies
         run: yarn
 
