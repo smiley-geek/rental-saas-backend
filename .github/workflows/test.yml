@@ -48,7 +48,7 @@ jobs:
         # Environment variables used by the `client.js` script to create a new PostgreSQL table.
         env:
           # The hostname used to communicate with the PostgreSQL service container
-          DATABASE_URL: postgresql://postgres:password@localhost:5432
+          DATABASE_URL: postgresql://postgres:password@postgres:5432
 
 
       - name: Build
